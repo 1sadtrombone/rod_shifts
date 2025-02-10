@@ -79,6 +79,7 @@ def read_egg(fname,start_freq,norm_func,chop_num,chop_ind):
 
     except (OSError,ValueError) as err:
         print(err)
+        return [False], [False], [False]
 
 
 def remove_power_excesses(freqs,spectrum,raw_spec,height,n_bins):
@@ -194,17 +195,19 @@ def is_trackable(digid, time, hires_directory, records2, threshold=2.5):
         return True
 
 
-def get_shifts(digid, time, data_path, records2, threshold = 5):
+def get_shifts(digid, time, hires_directory, records2, threshold = 5):
     '''
     what would need changed on another computer
     '''
-    
-    time_str = time.isoformat()
-    date_int = int(time_str[:4] + time_str[5:7] + time_str[8:10])
-    fname = data_path + str(date_int) + "/" + str(digid) + ".egg"
-    if(os.path.isfile(fname) == False):
-        date_int += 1
-        fname = data_path + str(date_int) + "/" + str(digid) + ".egg"
+
+    if time.hour*3600 + time.minute*60 + time.second - time.utcoffset().total_seconds() - 100 >= 24*60*60:
+        new_time = time + timedelta(days=1)
+        datestr = f'{new_time.year}{str(new_time.month).zfill(2)}{str(new_time.day).zfill(2)}'
+    else:
+        datestr = f'{time.year}{str(time.month).zfill(2)}{str(time.day).zfill(2)}'
+
+    fname = f'{hires_directory}{datestr}/{digid}.egg'
+
     crns = []
     for r2 in records2:
         if time + timedelta(hours=1) < r2[0]:
