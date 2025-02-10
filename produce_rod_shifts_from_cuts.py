@@ -88,19 +88,13 @@ for i, digi_ref in tqdm(enumerate(target_ids), total=len(target_ids)):
                     
     if is_trackable(digi_ref, target_times[i], hires_directory, records2):
         has_shift, shifts = get_shifts(digi_ref, target_times[i], hires_directory, records2, threshold=5)
-        if has_shift:
-            usable = True
-            reason = "usable"
-            for s in shifts:
-                if abs(s) > 40:
-                    usable = False
-                    reason = "shift greater than 40 kHz"
-                    break
-        else:
-            # no shift
-            usable = True
-            reason = "no shift"
-            shifts = [0]*50
+        usable = True
+        reason = "usable"
+        for s in shifts:
+            if abs(s) > 40:
+                usable = False
+                reason = "shift greater than 40 kHz"
+                break
     else:
         usable = False
         shifts = [0]*50
