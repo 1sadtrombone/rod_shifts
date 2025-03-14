@@ -94,11 +94,13 @@ for i, digi_ref in tqdm(enumerate(target_ids), total=len(target_ids)):
             if abs(s) > 40:
                 usable = False
                 reason = "shift greater than 40 kHz"
+                print(reason)
                 break
     else:
         usable = False
         shifts = [0]*50
         reason = "cannot track resonance"
+        print(reason)
 
     is_usables[i] = usable
     all_reasons[i] = reason
